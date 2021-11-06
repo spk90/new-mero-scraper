@@ -1,6 +1,10 @@
 const axios= require('axios');
 const express= require('express');
 const cheerio= require('cheerio');
+const cors= require('cors')
+
+app.use(cors());
+app.use(allowCrossDomain);
 
 async function getPriceFeed(){
     try{
