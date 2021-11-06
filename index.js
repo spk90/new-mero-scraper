@@ -2,9 +2,12 @@ const axios= require('axios');
 const express= require('express');
 const cheerio= require('cheerio');
 const cors= require('cors')
+const app= express();
+
 
 app.use(cors());
-app.use(allowCrossDomain);
+
+
 
 async function getPriceFeed(){
     try{
@@ -45,7 +48,9 @@ async function getPriceFeed(){
     }
 }
 
-const app= express();
+app.get("/",(req,res)=>{
+    res.send("You can goto /api/price to get the data")
+})
 
 app.get("/api/price", async (req,res)=>{
     try{
