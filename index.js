@@ -55,7 +55,7 @@ app.get("/",(req,res)=>{
 app.get("/api/price", async (req,res)=>{
     try{
         const price= await getPriceFeed();
-        return res.status(500).json({
+        return res.status(200).json({
             result:price,
         })
     }catch(err){
