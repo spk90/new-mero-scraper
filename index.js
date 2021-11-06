@@ -49,7 +49,7 @@ async function getPriceFeed(){
 }
 
 app.get("/",(req,res)=>{
-    res.send("You can goto /api/price to get the data")
+    res.sendFile(__dirname + "/index.html");
 })
 
 app.get("/api/price", async (req,res)=>{
