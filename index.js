@@ -9,20 +9,19 @@ app.use(cors());
 
 
 
-async function getPriceFeed(){
+async function getPriceFeed(elemSelector, keys){
     try{
-
         const siteUrl='https://merolagani.com/LatestMarket.aspx';
+       
+        
         const {data}= await axios.get(siteUrl);
         
         const $=cheerio.load(data);
-        const elemSelector= "#ctl00_ContentPlaceHolder1_LiveTrading > table > tbody > tr"
+        console.log($);
+        
         const selectedData= $(elemSelector);
         
-        const keys=[
-            "symbol", "ltp", "% change", "high", "low", "open", "qty"
-        ]
-
+    
         const nepseData= []
         
         selectedData.each((index,valueElement)=>{
@@ -52,15 +51,35 @@ app.get("/",(req,res)=>{
     res.sendFile(__dirname + "/index.html");
 })
 
+
 app.get("/api/price", async (req,res)=>{
     try{
-        const price= await getPriceFeed();
+        const elemSelector= "#ctl00_ContentPlaceHolder1_LiveTrading > table > tbody > tr";
+        const keys=[
+            "symbol", "ltp", "% change", "high", "low", "open", "qty"
+        ];
+
+        const price= await getPriceFeed(elemSelector,keys);
         return res.status(200).json({
             result:price,
         })
     }catch(err){
         console.log(err)
     }
+})
+
+app.get("/api/top-gainers", async (req,res)=>{
+    const elemSelector="#ctl00_ContentPlaceHolder1_LiveGainers > table > tbody > tr";
+    const keys=[
+        'symbol',
+        'ltp',
+        '%change',
+        'highPrice',
+        'qty'
+    ]
+    const price= await getPriceFeed(elemSelector,keys);
+
+    res.send(price)
 })
 
 
