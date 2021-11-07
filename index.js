@@ -17,7 +17,6 @@ async function getPriceFeed(elemSelector, keys){
         const {data}= await axios.get(siteUrl);
         
         const $=cheerio.load(data);
-        console.log($);
         
         const selectedData= $(elemSelector);
         
@@ -75,12 +74,35 @@ app.get("/api/top-gainers", async (req,res)=>{
         'ltp',
         '%change',
         'highPrice',
-        'qty'
+        'lowPrice',
+        'open',
+        'qty',
+        'turnover'
     ]
     const price= await getPriceFeed(elemSelector,keys);
-
-    res.send(price)
+    price.shift();
+    res.status(200).json({
+        result: price,
+    })
 })
+
+app.get("/api/top-loosers", async(req,res)=>{
+    const elemSelector="#ctl00_ContentPlaceHolder1_LiveLosers > table > tbody > tr";
+    const keys=['symbol',
+    'ltp',
+    '%change',
+    'highPrice',
+    'lowPrice',
+    'open',
+    'qty',
+'turnover']
+    const price= await getPriceFeed(elemSelector,keys);
+    price.shift();
+    res.status(200).json({
+        result: price,
+    })
+})
+
 
 
 app.listen(process.env.PORT || 3000, ()=>{
