@@ -1,16 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <center><h1>Welcome to nepse api data created by Rajesh Bhusal</h1></center>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Market Data</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Market Data</h1>
+    <button onclick="fetchPrice()">Fetch Price Data</button>
+    <button onclick="fetchTopGainers()">Fetch Top Gainers</button>
+    <button onclick="fetchTopLosers()">Fetch Top Losers</button>
 
-    <a href="https://nepal-share.herokuapp.com/api/price">Get-nepse-live-data</a><br><br>
-    <a href="https://nepal-share.herokuapp.com/api/top-gainers">Top gainers</a><br><br>
-    <a href="https://nepal-share.herokuapp.com/api/top-loosers">Top loosers</a>
-</body>
+    <h2>Price Data</h2>
+    <table id="priceTable">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>LTP</th>
+          <th>% Change</th>
+          <th>High</th>
+          <th>Low</th>
+          <th>Open</th>
+          <th>Qty</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h2>Top Gainers</h2>
+    <table id="gainersTable">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>LTP</th>
+          <th>% Change</th>
+          <th>High Price</th>
+          <th>Low Price</th>
+          <th>Open</th>
+          <th>Qty</th>
+          <th>Turnover</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h2>Top Losers</h2>
+    <table id="losersTable">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>LTP</th>
+          <th>% Change</th>
+          <th>High Price</th>
+          <th>Low Price</th>
+          <th>Open</th>
+          <th>Qty</th>
+          <th>Turnover</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      async function fetchPrice() {
+        const response = await fetch("http://localhost:3000/api/price");
+        const data = await response.json();
+        const tableBody = document
+          .getElementById("priceTable")
+          .querySelector("tbody");
+        tableBody.innerHTML = "";
+        data.result.forEach((item) => {
+          const row = `<tr>
+            <td>${item.symbol}</td>
+            <td>${item.ltp}</td>
+            <td>${item["% change"]}</td>
+            <td>${item.high}</td>
+            <td>${item.low}</td>
+            <td>${item.open}</td>
+            <td>${item.qty}</td>
+          </tr>`;
+          tableBody.innerHTML += row;
+        });
+      }
+
+      async function fetchTopGainers() {
+        const response = await fetch("http://localhost:3000/api/top-gainers");
+        const data = await response.json();
+        const tableBody = document
+          .getElementById("gainersTable")
+          .querySelector("tbody");
+        tableBody.innerHTML = "";
+        data.result.forEach((item) => {
+          const row = `<tr>
+            <td>${item.symbol}</td>
+            <td>${item.ltp}</td>
+            <td>${item["%change"]}</td>
+            <td>${item.highPrice}</td>
+            <td>${item.lowPrice}</td>
+            <td>${item.open}</td>
+            <td>${item.qty}</td>
+            <td>${item.turnover}</td>
+          </tr>`;
+          tableBody.innerHTML += row;
+        });
+      }
+
+      async function fetchTopLosers() {
+        const response = await fetch("http://localhost:3000/api/top-loosers");
+        const data = await response.json();
+        const tableBody = document
+          .getElementById("losersTable")
+          .querySelector("tbody");
+        tableBody.innerHTML = "";
+        data.result.forEach((item) => {
+          const row = `<tr>
+            <td>${item.symbol}</td>
+            <td>${item.ltp}</td>
+            <td>${item["%change"]}</td>
+            <td>${item.highPrice}</td>
+            <td>${item.lowPrice}</td>
+            <td>${item.open}</td>
+            <td>${item.qty}</td>
+            <td>${item.turnover}</td>
+          </tr>`;
+          tableBody.innerHTML += row;
+        });
+      }
+
+      // Auto-update every 5 seconds (5000 milliseconds)
+      setInterval(() => {
+        fetchPrice();
+        fetchTopGainers();
+        fetchTopLosers();
+      }, 5000);
+    </script>
+  </body>
 </html>
